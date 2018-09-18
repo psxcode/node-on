@@ -10,8 +10,8 @@
   "homepage": "https://github.com/psxcode/node-on",
   "scripts": {
     "test": "mocha --opts mocha.opts",
-    "build": "rimraf build && tsc -p tsconfig.build.json && cp ./package.json ./build/",
-    "release": "npm who && npm publish build"
+    "build": "rimraf build && tsc -p tsconfig.build.json",
+    "release": "yarn build && cp ./package.json ./build/ && npm publish build --registry https://registry.npmjs.org"
   },
   "devDependencies": {
     "@psxcode/wait": "^0.1.1",
