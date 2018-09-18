@@ -1,104 +1,190 @@
-# Compose
+#node-on
+
+Node-js EventEmitter helpers
 
 ### Install
 ```
-npm install @psxcode/compose
+npm install node-on
 ```
 
-### Usage
-### `compose` / `composeAsync`
-Sequential function composition, passing return value of the previous function as an argument to the next one. Functions are being invoked in reverse order.
+### `on`
+`(...events: string[]) => (callback: (val: any) => void) => (...emitters: EventEmitter[]) => () => void`
 ```ts
-import { compose } from '@psxcode/compose'
+import { on } from 'node-on'
 
-const add4 = (a: number) => a + 4
-const mult2 = (a: number) => a * 2
+// we have the following emitters
+declare const e0: EventEmitter,
+              e1: EventEmitter
 
-const comp = compose(mult2, add4)
-
-comp(2) // (2 + 4) * 2 => 12
-```
-`composeAsync` accepts both `sync` and `async` functions
-```ts
-import { composeAsync } from '@psxcode/compose'
-
-const add4Async = async (arg: number) => arg + 4
-const mult2 = (a: number) => a * 2
-
-// (number) => Promise<number>
-const comp = composeAsync(mult2, add4Async)
-
-await comp(2) // (2 + 4) * 2 => 12
-```
-The types are properly preserved
-```ts
-
-// (number) => string
-compose(
-  (val: any) => `${val}`,
-  (val: number) => val * 2
+const observer = on(
+  'data',
+  'end'    // events to listen
+)(
+  (value: any) => {} // your callback
 )
 
-// (string[]) => boolean
-compose(
-  (val: number) => val % 2 === 0,
-  compose(
-    (val: number[]) => val[0] || 0,
-    (val: string[]) => val.map(v => v.length) 
-  )
+const unsub = observer(
+  e0,
+  e1       // subscribe to emitters
+) // return unsubscribe function
+
+// cancel subscription
+unsub()
+```
+
+### `onEx`
+`(...events: string[]) => (callback: (val: {value: any, emitterIndex: number, emitter: EventEmitter}) => void) => (...emitters: EventEmitter[]) => () => void`
+```ts
+import { onEx } from 'node-on'
+
+// we have the following emitters
+declare const e0: EventEmitter,
+              e1: EventEmitter
+
+const observer = onEx(
+  'data',
+  'end'    // events to listen
+)(
+  ({ value: any, emitterIndex: number, emitter: EventEmitter }) => {} // your callback
 )
+
+const unsub = observer(e0, e1) // subscribe to emitters, return unsubscribe function
+
+// cancel subscription
+unsub()
 ```
 
-### `pipe` / `pipeAsync`
-Sequential function composition, passing return value of the previous function as an argument to the next one. Functions are being invoked in direct order.
+### `onceAll`
+`(...events: string[]) => (callback: (values: any[]) => void) => (...emitters: EventEmitter[]) => () => void`
 ```ts
-import { pipe } from '@psxcode/compose'
+import { onceAll } from 'node-on'
 
-const add4 = (a: number) => a + 4
-const mult2 = (a: number) => a * 2
+// we have the following emitters
+declare const e0: EventEmitter,
+              e1: EventEmitter
 
-// (number) => number
-const comp = pipe(mult2, add4)
+const observer = onceAll(
+  'data',
+  'end'    // events to listen
+)(
+  (values: any[]) => {} // your callback
+)
 
-comp(2) // (2 * 2) + 4 => 8
-```
-`pipeAsync` accepts both `sync` and `async` functions.
-```ts
-import { pipeAsync } from '@psxcode/compose'
+const unsub = observer(e0, e1) // subscribe to emitters, return unsubscribe function
 
-const add4 = (a: number) => a + 4
-const mult2 = (a: number) => a * 2
-
-// (number) => Promise<number>
-const comp = pipeAsync(mult2, add4)
-
-await comp(2) // (2 * 2) + 4 => 8
+// cancel subscription
+unsub()
 ```
 
-### `all` / `allAsync`
-Parallel function composition, passing the initial value to all functions, and returning an array of results.
+### `onceAllPromise`
+`(...events: string[]) => (...emitters: EventEmitter[]) => Promise<any[]>`
 ```ts
-import { all } from '@psxcode/compose'
+import { onceAllPromise } from 'node-on'
 
-const add4 = (a: number) => a + 4
-const mult2 = (a: number) => a * 2
-const toString = (a: number) => `${a}`
+// we have the following emitters
+declare const e0: EventEmitter,
+              e1: EventEmitter
 
-// (number) => [number, number, string]
-const comp = all(mult2, add4, toString)
+onceAllPromise(
+  'data',
+  'end'    // events to listen
+)(
+  e0,
+  e1
+).then((values: any[]) => {
+  // your callback
+})
 
-comp(2) // [8, 6, '2']
 ```
-`allAsync` accepts both `sync` and `async` functions
+
+### `onceRace`
+`(...events: string[]) => (callback: (val: any) => void) => (...emitters: EventEmitter[]) => () => void`
 ```ts
-import { allAsync } from '@psxcode/compose'
+import { onceRace } from 'node-on'
 
-const add4 = (a: number) => a + 4
-const mult2 = async (a: number) => a * 2
-const toString = (a: number) => `${a}`
+// we have the following emitters
+declare const e0: EventEmitter,
+              e1: EventEmitter
 
-// (number) => Promise<[number, number, string]>
-const comp = allAsync(mult2, add4, toString)
+const observer = onceRace(
+  'data',
+  'end'    // events to listen
+)(
+  (value: any) => {} // your callback
+)
 
-await comp(2) // [8, 6, '2']
+const unsub = observer(
+  e0,
+  e1        // subscribe to emitters
+) // return unsubscribe function
+
+// cancel subscription
+unsub()
+```
+
+### `onceRaceEx`
+`(...events: string[]) => (callback: (val: { value: any, emitterIndex: number, emitter: EventEmitter }) => void) => (...emitters: EventEmitter[]) => () => void`
+```ts
+import { onceRace } from 'node-on'
+
+// we have the following emitters
+declare const e0: EventEmitter,
+              e1: EventEmitter
+
+const observer = onceRace(
+  'data',
+  'end'    // events to listen
+)(
+  ({ value: any, emitterIndex: number, emitter: EventEmitter }) => {} // your callback
+)
+
+const unsub = observer(
+  e0,
+  e1        // subscribe to emitters
+) // return unsubscribe function
+
+// cancel subscription
+unsub()
+```
+
+### `onceRacePromise`
+`(...events: string[]) => (...emitters: EventEmitter[]) => Promise<any>`
+```ts
+import { onceRacePromise } from 'node-on'
+
+// we have the following emitters
+declare const e0: EventEmitter,
+              e1: EventEmitter
+
+onceRacePromise(
+  'data',
+  'end'    // events to listen
+)(
+  e0,
+  e1       // subscribe to emitters
+).then((value: any) => {
+  // your callback
+})
+
+```
+
+### `onceRacePromiseEx`
+`(...events: string[]) => (...emitters: EventEmitter[]) => Promise<{ value: any, emitterIndex: number, emitter: EventEmitter }>`
+```ts
+import { onceRacePromiseEx } from 'node-on'
+
+// we have the following emitters
+declare const e0: EventEmitter,
+              e1: EventEmitter
+
+onceRacePromiseEx(
+  'data',
+  'end'    // events to listen
+)(
+  e0,
+  e1       // subscribe to emitters
+).then(({ value: any, emitterIndex: number, emitter: EventEmitter }) => {
+  // your callback
+})
+
 ```
