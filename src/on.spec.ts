@@ -4,7 +4,7 @@ import * as sinon from 'sinon'
 import { waitTimePromise as wait } from '@psxcode/wait'
 import on from './on'
 
-xdescribe('[ on ]', function () {
+describe('[ on ]', function () {
   this.slow(100)
 
   it('should work', async () => {

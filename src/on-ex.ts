@@ -1,19 +1,28 @@
 import { EmitterValue } from './types'
 import EventEmitter = NodeJS.EventEmitter
+import CallbackStorage from './callback-storage'
 
 const onEx = (...events: string[]) =>
-  (cb: (value: EmitterValue) => void) =>
+  (callback: (value: EmitterValue) => void) =>
     (...emitters: EventEmitter[]) => {
-      const cbs = new WeakMap<EventEmitter, (arg: any) => void>(
-        emitters.map((emitter, i) => [
-          emitter,
-          (value: any) => cb({ value, emitter, emitterIndex: i })
-        ] as [EventEmitter, (arg: any) => void])
-      )
+      const cbs = new CallbackStorage()
+
       /* subscribe */
-      emitters.forEach(ee => events.forEach(e => ee.addListener(e, cbs.get(ee)!)))
+      emitters.forEach((emitter, emitterIndex) =>
+        events.forEach(event => {
+          let i = 0
+          const cb = (value: any) =>
+            callback({ value, index: i++, emitterIndex, emitter, event })
+          cbs.set(emitter, event, cb)
+          emitter.addListener(event, cb)
+        })
+      )
+
       return () => {
-        emitters.forEach(ee => events.forEach(e => ee.removeListener(e, cbs.get(ee)!)))
+        emitters.forEach(ee => {
+          events.forEach(e => ee.removeListener(e, cbs.get(ee, e)!))
+          cbs.delete(ee)
+        })
       }
     }
 

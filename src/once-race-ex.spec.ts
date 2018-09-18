@@ -26,8 +26,10 @@ describe('[ onceRaceEx ]', function () {
     expect(spy.getCall(0).args[0]).deep.eq(
       {
         value: 'value1',
+        index: 0,
         emitterIndex: 0,
-        emitter: ee
+        emitter: ee,
+        event: 'e1'
       } as EmitterValue
     )
 
@@ -68,8 +70,10 @@ describe('[ onceRaceEx ]', function () {
     expect(spy.getCall(0).args[0]).deep.eq(
       {
         value: 'value1',
+        index: 0,
         emitterIndex: 1,
-        emitter: ee1
+        emitter: ee1,
+        event: 'e1'
       } as EmitterValue
     )
 

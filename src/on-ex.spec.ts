@@ -26,8 +26,10 @@ describe('[ onEx ]', function () {
     expect(spy.getCall(0).args[0]).deep.eq(
       {
         value: 'value',
+        index: 0,
         emitterIndex: 0,
-        emitter: ee
+        emitter: ee,
+        event: 'e1'
       } as EmitterValue
     )
 
@@ -37,8 +39,10 @@ describe('[ onEx ]', function () {
     expect(spy.getCall(1).args[0]).deep.eq(
       {
         value: 'value1',
+        index: 1,
         emitterIndex: 0,
-        emitter: ee
+        emitter: ee,
+        event: 'e1'
       } as EmitterValue
     )
 
@@ -48,8 +52,10 @@ describe('[ onEx ]', function () {
     expect(spy.getCall(2).args[0]).deep.eq(
       {
         value: 'value2',
+        index: 0,
         emitterIndex: 0,
-        emitter: ee
+        emitter: ee,
+        event: 'e2'
       } as EmitterValue
     )
 
@@ -81,8 +87,10 @@ describe('[ onEx ]', function () {
     expect(spy.getCall(0).args[0]).deep.eq(
       {
         value: 'value',
+        index: 0,
         emitterIndex: 0,
-        emitter: ee0
+        emitter: ee0,
+        event: 'e1'
       } as EmitterValue
     )
 
@@ -92,8 +100,10 @@ describe('[ onEx ]', function () {
     expect(spy.getCall(1).args[0]).deep.eq(
       {
         value: 'value1',
+        index: 0,
         emitterIndex: 1,
-        emitter: ee1
+        emitter: ee1,
+        event: 'e1'
       } as EmitterValue
     )
 
@@ -103,8 +113,10 @@ describe('[ onEx ]', function () {
     expect(spy.getCall(2).args[0]).deep.eq(
       {
         value: 'value2',
+        index: 0,
         emitterIndex: 2,
-        emitter: ee2
+        emitter: ee2,
+        event: 'e2'
       } as EmitterValue
     )
 

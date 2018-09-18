@@ -1,25 +1,32 @@
 import EventEmitter = NodeJS.EventEmitter
 import { EmitterValue } from './types'
+import CallbackStorage from './callback-storage'
 
 const onceRaceEx = (...events: string[]) =>
-  (cb: (value: EmitterValue) => void) =>
+  (callback: (value: EmitterValue) => void) =>
     (...emitters: EventEmitter[]) => {
-      const cbs = new WeakMap<EventEmitter, any>(
-        emitters.map((emitter, i) => [
-          emitter,
-          (value: any) => {
-            unsubscribe()
-            cb({ value, emitter, emitterIndex: i })
-          }
-        ] as [EventEmitter, any])
-      )
+      const cbs = new CallbackStorage()
 
       function unsubscribe () {
-        emitters.forEach(ee => events.forEach(e => ee.removeListener(e, cbs.get(ee))))
+        emitters.forEach(ee => {
+          events.forEach(e => cbs.has(ee, e) && ee.removeListener(e, cbs.get(ee, e)!))
+          cbs.delete(ee)
+        })
       }
 
       /* subscribe */
-      emitters.forEach(ee => events.forEach(e => ee.addListener(e, cbs.get(ee))))
+      emitters.forEach((emitter, emitterIndex) =>
+        events.forEach(event => {
+          let i = 0
+          const cb = (value: any) => {
+            unsubscribe()
+            callback({ value, index: i++, emitterIndex, emitter, event })
+          }
+          cbs.set(emitter, event, cb)
+          emitter.addListener(event, cb)
+        })
+      )
+
       return unsubscribe
     }
 
