@@ -1,31 +1,30 @@
 import EventEmitter = NodeJS.EventEmitter
-import { EmitterValue } from './types'
-import CallbackStorage from './callback-storage'
+import { EmitterObserverEx } from './types'
 
-const onceRaceEx = (...events: string[]) =>
-  (callback: (value: EmitterValue) => void) =>
+export const onceRaceEx = (...events: string[]) =>
+  (callback: EmitterObserverEx) =>
     (...emitters: EventEmitter[]) => {
-      const cbs = new CallbackStorage()
-
-      function unsubscribe () {
-        emitters.forEach(ee => {
-          events.forEach(e => cbs.has(ee, e) && ee.removeListener(e, cbs.get(ee, e)!))
-          cbs.delete(ee)
+      const listener = (event: string, emitterIndex: number): EmitterObserverEx => (value: any) => {
+        unsubscribe()
+        return callback({
+          value,
+          index: 0,
+          event,
+          emitterIndex,
+          emitter: emitters[emitterIndex]
         })
       }
+      const cbs = emitters.map((_, i) => events.reduce(
+        (res, e) => (res[e] = listener(e, i), res),
+        {} as { [key: string]: EmitterObserverEx }
+      ))
 
       /* subscribe */
-      emitters.forEach((emitter, emitterIndex) =>
-        events.forEach(event => {
-          let i = 0
-          const cb = (value: any) => {
-            unsubscribe()
-            callback({ value, index: i++, emitterIndex, emitter, event })
-          }
-          cbs.set(emitter, event, cb)
-          emitter.addListener(event, cb)
-        })
-      )
+      emitters.forEach((ee, i) => events.forEach(e => ee.addListener(e, (cbs[i][e]))))
+
+      function unsubscribe () {
+        emitters.forEach((ee, i) => events.forEach(e => ee.removeListener(e, cbs[i][e])))
+      }
 
       return unsubscribe
     }

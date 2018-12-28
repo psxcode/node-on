@@ -1,29 +1,23 @@
 import EventEmitter = NodeJS.EventEmitter
+import { EmitterObserverAll } from './types'
 
 const onceAll = (...events: string[]) =>
-  (cb: (values: any[]) => void) =>
+  (cb: EmitterObserverAll) =>
     (...emitters: EventEmitter[]) => {
-      const doneEE = new WeakMap<EventEmitter, number>()
-      const cbs = new WeakMap<EventEmitter, any>()
       const values = new Array(emitters.length)
-      emitters.forEach(ee => doneEE.set(ee, 0))
-      emitters.forEach((ee, i) => cbs.set(ee, listener.bind(null, ee, i)))
+      let numDone = 0
+      const listener = (index: number): EmitterObserverAll =>
+        function impl (value: any) {
+          values[index] = value
+          ++numDone === events.length && cb(values)
+        }
+      const cbs: EmitterObserverAll[] = emitters.map((_, i) => listener(i))
 
       /* subscribe */
-      emitters.forEach(ee => events.forEach(e => ee.once(e, cbs.get(ee))))
-      return unsubscribe
+      emitters.forEach((ee, ii) => events.forEach(e => ee.once(e, cbs[ii])))
 
-      function listener (ee: EventEmitter, index: number, value: any) {
-        doneEE.set(ee, (doneEE.get(ee) as number) + 1)
-        values[index] = value
-        if (emitters.every(ee => (doneEE.get(ee) as number) === events.length)) {
-          unsubscribe()
-          return cb(values)
-        }
-      }
-
-      function unsubscribe () {
-        emitters.forEach(ee => events.forEach(e => ee.removeListener(e, cbs.get(ee))))
+      return () => {
+        emitters.forEach((ee, ii) => events.forEach(e => ee.removeListener(e, cbs[ii])))
       }
     }
 

@@ -4,7 +4,6 @@
   "main": "index.js",
   "module": "index",
   "typings": "index.d.ts",
-  "private": false,
   "license": "MIT",
   "author": "psxcode <psxcode@gmail.com> (https://github.com/psxcode)",
   "homepage": "https://github.com/psxcode/node-on",
@@ -12,19 +11,18 @@
     "test": "mocha --opts mocha.opts",
     "build": "rimraf build && tsc -p tsconfig.build.json",
     "copy": "cp ./{package.json,LICENSE,readme.md} ./build/",
-    "release": "yarn build && yarn copy && npm publish build --registry https://registry.npmjs.org"
+    "release": "yarn build && yarn copy && npm publish build"
   },
   "devDependencies": {
     "@psxcode/wait": "^0.1.1",
-    "@types/chai": "^4.1.4",
+    "@types/chai": "^4.1.7",
     "@types/mocha": "^5.2.5",
-    "@types/node": "^10.9.4",
-    "@types/sinon": "^5.0.2",
-    "chai": "^4.1.2",
+    "@types/node": "^10.12.18",
+    "chai": "^4.2.0",
     "mocha": "^5.2.0",
     "rimraf": "^2.6.2",
-    "sinon": "^6.3.1",
+    "spyfn": "^0.1.1",
     "ts-node": "^7.0.1",
-    "typescript": "^3.0.3"
+    "typescript": "^3.2.2"
   }
 }

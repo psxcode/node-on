@@ -1,11 +1,12 @@
 import EventEmitter = NodeJS.EventEmitter
+import { EmitterObserver } from './types'
 
 const onceRace = (...events: string[]) =>
-  (cb: (value: any) => void) =>
+  (cb: EmitterObserver) =>
     (...emitters: EventEmitter[]) => {
-      const onData = (value: any) => {
+      const onData = (...values: any[]) => {
         unsubscribe()
-        cb(value)
+        cb(...values)
       }
 
       function unsubscribe () {

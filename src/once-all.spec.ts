@@ -1,5 +1,6 @@
+import { expect } from 'chai'
+import { createSpy, getSpyCalls } from 'spyfn'
 import { EventEmitter } from 'events'
-import * as sinon from 'sinon'
 import { waitTimePromise as wait } from '@psxcode/wait'
 import onceAll from './once-all'
 
@@ -8,57 +9,51 @@ describe('[ onceAll ]', function () {
 
   it('should work', async () => {
     const ee = new EventEmitter()
-    const spy = sinon.spy()
-    const unsub = onceAll('e1', 'e2')(spy)(ee)
+    const spy = createSpy(() => {})
 
-    await wait(10)
-    sinon.assert.notCalled(spy)
+    /* subscribe */
+    const unsub = onceAll('event1', 'event2')(spy)(ee)
 
-    await wait(10)
-    ee.emit('e0')
-    sinon.assert.notCalled(spy)
-
-    await wait(10)
-    ee.emit('e1')
-    sinon.assert.notCalled(spy)
-
-    await wait(10)
-    ee.emit('e1')
-    sinon.assert.notCalled(spy)
-
-    await wait(10)
-    ee.emit('e2')
-    sinon.assert.calledOnce(spy)
+    ee.emit('event0', 'e0')
+    ee.emit('event1', 'e1')
+    ee.emit('event1', 'e1-repeat')
+    ee.emit('event2', 'e2')
 
     /* unsubscribe */
     unsub()
 
-    ee.emit('e1')
-    ee.emit('e2')
-    sinon.assert.calledOnce(spy)
+    ee.emit('event1')
+    ee.emit('event2')
+
+    /* wait for ee to fire */
+    await wait(0)
+
+    expect(getSpyCalls(spy)).deep.eq(
+      [
+        ['e1', 'e2']
+      ]
+    )
   })
 
   it('should work with early unsubscribe', async () => {
     const ee = new EventEmitter()
-    const spy = sinon.spy()
-    const unsub = onceAll('e1', 'e2')(spy)(ee)
+    const spy = createSpy(() => {})
 
-    await wait(10)
-    sinon.assert.notCalled(spy)
+    /* subscribe */
+    const unsub = onceAll('event1', 'event2')(spy)(ee)
 
     /* early unsubscribe */
     unsub()
 
-    await wait(10)
-    ee.emit('e1')
-    sinon.assert.notCalled(spy)
+    ee.emit('event1', 'e1')
+    ee.emit('event1', 'e1-repeat')
+    ee.emit('event2', 'e2')
 
-    await wait(10)
-    ee.emit('e1')
-    sinon.assert.notCalled(spy)
+    /* wait for ee to fire */
+    await wait(0)
 
-    await wait(10)
-    ee.emit('e2')
-    sinon.assert.notCalled(spy)
+    expect(getSpyCalls(spy)).deep.eq(
+      []
+    )
   })
 })

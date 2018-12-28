@@ -1,101 +1,75 @@
-import { EventEmitter } from 'events'
 import { expect } from 'chai'
-import * as sinon from 'sinon'
+import { createSpy, getSpyCalls } from 'spyfn'
+import { EventEmitter } from 'events'
 import { waitTimePromise as wait } from '@psxcode/wait'
 import onceRace from './once-race'
 
 describe('[ onceRace ]', function () {
-  this.slow(100)
-
   it('should work', async () => {
     const ee = new EventEmitter()
-    const spy = sinon.spy()
-    const unsub = onceRace('e1', 'e2')(spy)(ee)
+    const spy = createSpy(() => {})
+    const unsub = onceRace('event1', 'event2')(spy)(ee)
 
-    await wait(10)
-    sinon.assert.notCalled(spy)
-
-    await wait(10)
-    ee.emit('e0')
-    sinon.assert.notCalled(spy)
-
-    await wait(10)
-    ee.emit('e1', 'value1')
-    sinon.assert.callCount(spy, 1)
-    expect(spy.getCall(0).args[0]).eq('value1')
-
-    await wait(10)
-    ee.emit('e1')
-    sinon.assert.callCount(spy, 1)
-
-    await wait(10)
-    ee.emit('e2')
-    sinon.assert.callCount(spy, 1)
+    ee.emit('event0', 'e0')
+    ee.emit('event1', 'e1')
+    ee.emit('event1', 'e1-repeat')
+    ee.emit('event2', 'e2')
 
     /* unsubscribe */
     unsub()
 
-    ee.emit('e1')
-    ee.emit('e2')
-    sinon.assert.callCount(spy, 1)
+    ee.emit('event1', 'e1-more')
+    ee.emit('event2', 'e2-more')
+
+    /* wait for ee to fire */
+    await wait(0)
+
+    expect(getSpyCalls(spy)).deep.eq(
+      []
+    )
   })
 
   it('should work with multiple ees', async () => {
     const ee0 = new EventEmitter()
     const ee1 = new EventEmitter()
     const ee2 = new EventEmitter()
-    const spy = sinon.spy()
-    const unsub = onceRace('e1', 'e2')(spy)(ee0, ee1, ee2)
+    const spy = createSpy(() => {})
 
-    await wait(10)
-    sinon.assert.notCalled(spy)
+    /* subscribe */
+    const unsub = onceRace('event1', 'event2')(spy)(ee0, ee1, ee2)
 
-    await wait(10)
-    ee0.emit('e0', 'value0')
-    sinon.assert.notCalled(spy)
-
-    await wait(10)
-    ee1.emit('e1', 'value1')
-    sinon.assert.callCount(spy, 1)
-    expect(spy.getCall(0).args[0]).eq('value1')
-
-    await wait(10)
-    ee0.emit('e1', 'value2')
-    sinon.assert.callCount(spy, 1)
-
-    await wait(10)
-    ee2.emit('e2', 'value3')
-    sinon.assert.callCount(spy, 1)
+    ee0.emit('event0', 'e0')
+    ee1.emit('event1', 'e1')
+    ee0.emit('event1', 'e1-repeat')
+    ee2.emit('event2', 'e2')
 
     /* unsubscribe */
     unsub()
 
-    ee0.emit('e1')
-    ee1.emit('e2')
-    sinon.assert.callCount(spy, 1)
+    ee0.emit('event1', 'e1-more')
+    ee1.emit('event2', 'e2-more')
+
+    expect(getSpyCalls(spy)).deep.eq(
+      []
+    )
   })
 
   it('should work with early unsubscribe', async () => {
     const ee = new EventEmitter()
-    const spy = sinon.spy()
-    const unsub = onceRace('e1', 'e2')(spy)(ee)
+    const spy = createSpy(() => {})
 
-    await wait(10)
-    sinon.assert.notCalled(spy)
+    /* subscribe */
+    const unsub = onceRace('event1', 'event2')(spy)(ee)
 
     /* early unsubscribe */
     unsub()
 
-    await wait(10)
-    ee.emit('e1')
-    sinon.assert.notCalled(spy)
+    ee.emit('event1', 'e1')
+    ee.emit('event1', 'e1-repeat')
+    ee.emit('event2', 'e2')
 
-    await wait(10)
-    ee.emit('e1')
-    sinon.assert.notCalled(spy)
-
-    await wait(10)
-    ee.emit('e2')
-    sinon.assert.notCalled(spy)
+    expect(getSpyCalls(spy)).deep.eq(
+      []
+    )
   })
 })
