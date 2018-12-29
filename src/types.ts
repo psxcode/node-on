@@ -1,10 +1,10 @@
-import EventEmitter = NodeJS.EventEmitter
+import { EventEmitter } from 'events'
 
 export type EmitterValue = {
-  value: any,
-  index: number,
-  emitter: EventEmitter,
-  emitterIndex: number,
+  value: any
+  index: number
+  emitter: EventEmitter
+  emitterIndex: number
   event: string
 }
 

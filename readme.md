@@ -28,12 +28,12 @@ const unsub = observer(
   e1       // subscribe to emitters
 ) // return unsubscribe function
 
-// cancel subscription
+// unsubscribe
 unsub()
 ```
 
 ### `onEx`
-`(...events: string[]) => (callback: (val: {value: any, emitterIndex: number, emitter: EventEmitter}) => void) => (...emitters: EventEmitter[]) => () => void`
+`(...events: string[]) => (callback: (val: {value: any, event: string, index: number, emitterIndex: number, emitter: EventEmitter}) => void) => (...emitters: EventEmitter[]) => () => void`
 ```ts
 import { onEx } from 'node-on'
 
@@ -45,12 +45,12 @@ const observer = onEx(
   'data',
   'end'    // events to listen
 )(
-  ({ value: any, emitterIndex: number, emitter: EventEmitter }) => {} // your callback
+  ({ value, event, index, emitterIndex, emitter }) => {} // your callback
 )
 
 const unsub = observer(e0, e1) // subscribe to emitters, return unsubscribe function
 
-// cancel subscription
+// unsubscribe
 unsub()
 ```
 
@@ -72,7 +72,29 @@ const observer = onceAll(
 
 const unsub = observer(e0, e1) // subscribe to emitters, return unsubscribe function
 
-// cancel subscription
+// unsubscribe
+unsub()
+```
+
+### `onceAllEx`
+`(...events: string[]) => (callback: (val: { value: any, event: string, index: number, emitter: EventEmitter, emitterIndex: number }) => void) => (...emitters: EventEmitter[]) => () => void`
+```ts
+import { onceAll } from 'node-on'
+
+// we have the following emitters
+declare const e0: EventEmitter,
+              e1: EventEmitter
+
+const observer = onceAll(
+  'data',
+  'end'    // events to listen
+)(
+  ({ value, event, index, emitter, emitterIndex }) => {} // your callback
+)
+
+const unsub = observer(e0, e1) // subscribe to emitters, return unsubscribe function
+
+// unsubscribe
 unsub()
 ```
 
@@ -86,15 +108,70 @@ declare const e0: EventEmitter,
               e1: EventEmitter
 
 onceAllPromise(
-  'data',
-  'end'    // events to listen
+  'data', // events to listen
 )(
   e0,
   e1
-).then((values: any[]) => {
+).then(([valueFromEmitter0, valueFromEmitter1]) => {
   // your callback
 })
+```
 
+### `onceAllExPromise`
+`(...events: string[]) => (...emitters: EventEmitter[]) => Promise<{ value: any, event: string, index: number, emitter: EventEmitter, emitterIndex: number }[]>`
+```ts
+import { onceAllPromise } from 'node-on'
+
+// we have the following emitters
+declare const e0: EventEmitter,
+              e1: EventEmitter
+
+onceAllPromise(
+  'data' // events to listen
+)(
+  e0,
+  e1
+).then(([emitterExValue0, emitterExValue1]) => {
+  // your callback
+})
+```
+
+### `onceAllPromiseReject`
+`(rejectEvents: string[], resolveEvents: string[]) => (...emitters: EventEmitter[]) => Promise<any[]>`
+```ts
+import { onceAllPromise } from 'node-on'
+
+// we have the following emitters
+declare const e0: EventEmitter,
+              e1: EventEmitter
+
+onceAllPromise(['error'], ['data'])(
+  e0,
+  e1
+).then(([ valueFromEmitter0, valueFromEmitter1 ]) => {
+  // your callback
+}).catch((error: any) => {
+  // your error handler
+})
+```
+
+### `onceAllExPromiseReject`
+`(rejectEvents: string[], resolveEvents: string[]) => (...emitters: EventEmitter[]) => Promise<{ value: any, event: string, index: number, emitter: EventEmitter, emitterIndex: number }[]>`
+```ts
+import { onceAllPromise } from 'node-on'
+
+// we have the following emitters
+declare const e0: EventEmitter,
+              e1: EventEmitter
+
+onceAllPromise(['error'], ['data'])(
+  e0,
+  e1
+).then(([ valueExFromEmitter0, valueExFromEmitter1 ]) => {
+  // your callback
+}).catch(({ value, event, index, emitterIndex, emitter }) => {
+  // your error handler
+})
 ```
 
 ### `onceRace`
@@ -118,12 +195,12 @@ const unsub = observer(
   e1        // subscribe to emitters
 ) // return unsubscribe function
 
-// cancel subscription
+// unsubscribe
 unsub()
 ```
 
 ### `onceRaceEx`
-`(...events: string[]) => (callback: (val: { value: any, emitterIndex: number, emitter: EventEmitter }) => void) => (...emitters: EventEmitter[]) => () => void`
+`(...events: string[]) => (callback: (val: { value: any, event: string, index: number, emitterIndex: number, emitter: EventEmitter }) => void) => (...emitters: EventEmitter[]) => () => void`
 ```ts
 import { onceRace } from 'node-on'
 
@@ -143,7 +220,7 @@ const unsub = observer(
   e1        // subscribe to emitters
 ) // return unsubscribe function
 
-// cancel subscription
+// unsubscribe
 unsub()
 ```
 
@@ -165,13 +242,12 @@ onceRacePromise(
 ).then((value: any) => {
   // your callback
 })
-
 ```
 
-### `onceRacePromiseEx`
-`(...events: string[]) => (...emitters: EventEmitter[]) => Promise<{ value: any, emitterIndex: number, emitter: EventEmitter }>`
+### `onceRaceExPromise`
+`(...events: string[]) => (...emitters: EventEmitter[]) => Promise<{ value: any, event: string, index: number, emitterIndex: number, emitter: EventEmitter }>`
 ```ts
-import { onceRacePromiseEx } from 'node-on'
+import { onceRaceExPromise } from 'node-on'
 
 // we have the following emitters
 declare const e0: EventEmitter,
@@ -183,8 +259,45 @@ onceRacePromiseEx(
 )(
   e0,
   e1       // subscribe to emitters
-).then(({ value: any, emitterIndex: number, emitter: EventEmitter }) => {
+).then(({ value, event, index, emitterIndex, emitter }) => {
   // your callback
 })
+```
 
+### `onceRacePromiseReject`
+`(...events: string[]) => (...emitters: EventEmitter[]) => Promise<any>`
+```ts
+import { onceRacePromiseReject } from 'node-on'
+
+// we have the following emitters
+declare const e0: EventEmitter,
+              e1: EventEmitter
+
+onceRacePromise(['error'], ['data'])(
+  e0,
+  e1       // subscribe to emitters
+).then((value: any) => {
+  // your callback
+}).catch((error: any) => {
+  // error handler
+})
+```
+
+### `onceRaceExPromiseReject`
+`(...events: string[]) => (...emitters: EventEmitter[]) => Promise<{ value: any, event: string, index: number, emitterIndex: number, emitter: EventEmitter }>`
+```ts
+import { onceRaceExPromiseReject } from 'node-on'
+
+// we have the following emitters
+declare const e0: EventEmitter,
+              e1: EventEmitter
+
+onceRacePromiseEx(['error'], ['data'])(
+  e0,
+  e1       // subscribe to emitters
+).then(({ value, event, index, emitterIndex, emitter }) => {
+  // your callback
+}).catch(({ value, event, index, emitterIndex, emitter }) => {
+  // error handler
+})
 ```

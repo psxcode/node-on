@@ -3,9 +3,9 @@ import { expect } from 'chai'
 import { createSpy, getSpyCalls } from 'spyfn'
 import { waitTimePromise as wait } from '@psxcode/wait'
 import on from './on'
+import listenerCount from './listener-count'
 
-describe.only('[ on ]', function () {
-
+describe('[ on ]', function () {
   it('single ee', async () => {
     const ee = new EventEmitter()
     const spy = createSpy(() => {})
@@ -27,13 +27,11 @@ describe.only('[ on ]', function () {
     ee.emit('event1', 'e1-more')
     ee.emit('event2', 'e2-more')
 
-    expect(getSpyCalls(spy)).deep.eq(
-      [
-        ['e1'],
-        ['e1-repeat'],
-        ['e2']
-      ]
-    )
+    /* wait for ee */
+    await wait(0)
+
+    expect(getSpyCalls(spy)).deep.eq([ [ 'e1' ], [ 'e1-repeat' ], [ 'e2' ] ])
+    expect(listenerCount(ee)).eq(0)
   })
 
   it('multiple ees', async () => {
@@ -45,14 +43,9 @@ describe.only('[ on ]', function () {
     /* subscribe */
     const unsub = on('event1', 'event2')(spy)(ee0, ee1, ee2)
 
-    await wait(0)
-
     ee0.emit('event0', 'e0')
-
     ee0.emit('event1', 'e1')
-
     ee1.emit('event1', 'e1-repeat')
-
     ee2.emit('event2', 'e2')
 
     /* unsubscribe */
@@ -61,12 +54,10 @@ describe.only('[ on ]', function () {
     ee0.emit('event1')
     ee1.emit('event2')
 
-    expect(getSpyCalls(spy)).deep.eq(
-      [
-        ['e1'],
-        ['e1-repeat'],
-        ['e2']
-      ]
-    )
+    /* wait for ee */
+    await wait(0)
+
+    expect(getSpyCalls(spy)).deep.eq([ [ 'e1' ], [ 'e1-repeat' ], [ 'e2' ] ])
+    expect(listenerCount(ee0, ee1, ee2)).eq(0)
   })
 })

@@ -1,21 +1,19 @@
-import EventEmitter = NodeJS.EventEmitter
+import { EventEmitter } from 'events'
 import { EmitterObserver } from './types'
 
-const onceRace = (...events: string[]) =>
-  (cb: EmitterObserver) =>
-    (...emitters: EventEmitter[]) => {
-      const onData = (...values: any[]) => {
-        unsubscribe()
-        cb(...values)
-      }
+const onceRace = (...events: string[]) => (cb: EmitterObserver) => (...emitters: EventEmitter[]) => {
+  const onData = (...values: any[]) => {
+    unsubscribe()
+    cb(...values)
+  }
 
-      function unsubscribe () {
-        emitters.forEach(ee => events.forEach(e => ee.removeListener(e, onData)))
-      }
+  function unsubscribe () {
+    emitters.forEach((ee) => events.forEach((e) => ee.removeListener(e, onData)))
+  }
 
-      /* subscribe */
-      emitters.forEach(ee => events.forEach(e => ee.addListener(e, onData)))
-      return unsubscribe
-    }
+  /* subscribe */
+  emitters.forEach((ee) => events.forEach((e) => ee.addListener(e, onData)))
+  return unsubscribe
+}
 
 export default onceRace

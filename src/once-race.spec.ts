@@ -5,7 +5,7 @@ import { waitTimePromise as wait } from '@psxcode/wait'
 import onceRace from './once-race'
 
 describe('[ onceRace ]', function () {
-  it('should work', async () => {
+  it('single ee', async () => {
     const ee = new EventEmitter()
     const spy = createSpy(() => {})
     const unsub = onceRace('event1', 'event2')(spy)(ee)
@@ -24,12 +24,10 @@ describe('[ onceRace ]', function () {
     /* wait for ee to fire */
     await wait(0)
 
-    expect(getSpyCalls(spy)).deep.eq(
-      []
-    )
+    expect(getSpyCalls(spy)).deep.eq([ [ 'e1' ] ])
   })
 
-  it('should work with multiple ees', async () => {
+  it('multiple ees', async () => {
     const ee0 = new EventEmitter()
     const ee1 = new EventEmitter()
     const ee2 = new EventEmitter()
@@ -49,12 +47,13 @@ describe('[ onceRace ]', function () {
     ee0.emit('event1', 'e1-more')
     ee1.emit('event2', 'e2-more')
 
-    expect(getSpyCalls(spy)).deep.eq(
-      []
-    )
+    /* wait for ee */
+    await wait(0)
+
+    expect(getSpyCalls(spy)).deep.eq([ [ 'e1' ] ])
   })
 
-  it('should work with early unsubscribe', async () => {
+  it('early unsubscribe', async () => {
     const ee = new EventEmitter()
     const spy = createSpy(() => {})
 
@@ -68,8 +67,9 @@ describe('[ onceRace ]', function () {
     ee.emit('event1', 'e1-repeat')
     ee.emit('event2', 'e2')
 
-    expect(getSpyCalls(spy)).deep.eq(
-      []
-    )
+    /* wait for ee */
+    await wait(0)
+
+    expect(getSpyCalls(spy)).deep.eq([])
   })
 })
