@@ -62,6 +62,7 @@ describe('[ onceRaceExPromiseReject ]', function () {
 
     ee.emit('event0', 'e0')
     ee.emit('error', 'err')
+    ee.emit('event1', 'e1')
     ee.emit('event2', 'e2')
 
     /* wait for ee */

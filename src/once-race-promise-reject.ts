@@ -4,20 +4,13 @@ import on from './on'
 
 const onceRacePromise = (rejectEvents: string[], resolveEvents: string[]) => (...emitters: EventEmitter[]) =>
   new Promise((resolve, reject) => {
-    let done = false
     const resolveUnsub = onceRace(...resolveEvents)((value) => {
-      if (!done) {
-        done = true
-        rejectUnsub()
-        resolve(value)
-      }
+      rejectUnsub()
+      resolve(value)
     })(...emitters)
     const rejectUnsub = on(...rejectEvents)((error) => {
-      if (!done) {
-        done = true
-        resolveUnsub()
-        reject(error)
-      }
+      resolveUnsub()
+      reject(error)
     })(...emitters)
   })
 

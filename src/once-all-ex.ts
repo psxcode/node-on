@@ -3,13 +3,8 @@ import { EmitterObserverAllEx, EmitterValue } from './types'
 
 const onceAllEx = (...events: string[]) => (cb: EmitterObserverAllEx) => (...emitters: EventEmitter[]) => {
   const values: EmitterValue[] = new Array(emitters.length)
-  const done: boolean[] = new Array(emitters.length)
   let numDone = 0
   const listener = (event: string, emitterIndex: number): EmitterObserverAllEx => (value: any) => {
-    if (done[emitterIndex]) {
-      return
-    }
-
     values[emitterIndex] = {
       value,
       index: 0,
@@ -17,7 +12,6 @@ const onceAllEx = (...events: string[]) => (cb: EmitterObserverAllEx) => (...emi
       emitterIndex,
       emitter: emitters[emitterIndex]
     }
-    done[emitterIndex] = true
 
     if (++numDone === emitters.length) {
       unsubscribe()

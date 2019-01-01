@@ -4,20 +4,13 @@ import onceRaceEx from './once-race-ex'
 
 const onceAllPromiseExReject = (rejectEvents: string[], resolveEvents: string[]) => (...emitters: EventEmitter[]) =>
   new Promise((resolve, reject) => {
-    let done = false
     const resolveUnsub = onceAllEx(...resolveEvents)((values) => {
-      if (!done) {
-        done = true
-        rejectUnsub()
-        resolve(values)
-      }
+      rejectUnsub()
+      resolve(values)
     })(...emitters)
     const rejectUnsub = onceRaceEx(...rejectEvents)((value) => {
-      if (!done) {
-        done = true
-        resolveUnsub()
-        reject(value)
-      }
+      resolveUnsub()
+      reject(value)
     })(...emitters)
   })
 
