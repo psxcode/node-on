@@ -5,7 +5,7 @@ import { waitTimePromise as wait } from '@psxcode/wait'
 import on from '../src/on'
 import listenerCount from '../src/listener-count'
 
-describe('[ on ]', function () {
+describe('[ on ]', () => {
   it('single ee', async () => {
     const ee = new EventEmitter()
     const spy = createSpy(() => {})
@@ -30,7 +30,11 @@ describe('[ on ]', function () {
     /* wait for ee */
     await wait(0)
 
-    expect(getSpyCalls(spy)).deep.eq([ [ 'e1' ], [ 'e1-repeat' ], [ 'e2' ] ])
+    expect(getSpyCalls(spy)).deep.eq([
+      ['e1'],
+      ['e1-repeat'],
+      ['e2'],
+    ])
     expect(listenerCount(ee)).eq(0)
   })
 
@@ -57,7 +61,11 @@ describe('[ on ]', function () {
     /* wait for ee */
     await wait(0)
 
-    expect(getSpyCalls(spy)).deep.eq([ [ 'e1' ], [ 'e1-repeat' ], [ 'e2' ] ])
+    expect(getSpyCalls(spy)).deep.eq([
+      ['e1'],
+      ['e1-repeat'],
+      ['e2'],
+    ])
     expect(listenerCount(ee0, ee1, ee2)).eq(0)
   })
 })

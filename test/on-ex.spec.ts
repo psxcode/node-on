@@ -28,9 +28,9 @@ describe('[ onEx ]', () => {
     await wait(0)
 
     expect(getSpyCalls(spy)).deep.eq([
-      [ { value: 'e1', event: 'event1', index: 0, emitter: ee, emitterIndex: 0 } ],
-      [ { value: 'e1-repeat', event: 'event1', index: 1, emitter: ee, emitterIndex: 0 } ],
-      [ { value: 'e2', event: 'event2', index: 2, emitter: ee, emitterIndex: 0 } ]
+      [{ value: 'e1', event: 'event1', index: 0, emitter: ee, emitterIndex: 0 }],
+      [{ value: 'e1-repeat', event: 'event1', index: 1, emitter: ee, emitterIndex: 0 }],
+      [{ value: 'e2', event: 'event2', index: 2, emitter: ee, emitterIndex: 0 }],
     ])
     expect(listenerCount(ee)).eq(0)
   })
@@ -59,9 +59,9 @@ describe('[ onEx ]', () => {
     await wait(0)
 
     expect(getSpyCalls(spy)).deep.eq([
-      [ { value: 'e1', event: 'event1', index: 0, emitter: ee0, emitterIndex: 0 } ],
-      [ { value: 'e1-repeat', event: 'event1', index: 0, emitter: ee1, emitterIndex: 1 } ],
-      [ { value: 'e2', event: 'event2', index: 0, emitter: ee2, emitterIndex: 2 } ]
+      [{ value: 'e1', event: 'event1', index: 0, emitter: ee0, emitterIndex: 0 }],
+      [{ value: 'e1-repeat', event: 'event1', index: 0, emitter: ee1, emitterIndex: 1 }],
+      [{ value: 'e2', event: 'event2', index: 0, emitter: ee2, emitterIndex: 2 }],
     ])
     expect(listenerCount(ee0, ee1, ee2)).eq(0)
   })

@@ -1,6 +1,6 @@
+import { EventEmitter } from 'events'
 import { expect } from 'chai'
 import { createSpy, getSpyCalls } from 'spyfn'
-import { EventEmitter } from 'events'
 import { waitTimePromise as wait } from '@psxcode/wait'
 import onceAllEx from '../src/once-all-ex'
 import listenerCount from '../src/listener-count'
@@ -22,7 +22,9 @@ describe('[ onceAllEx ]', () => {
     await wait(0)
 
     expect(getSpyCalls(spy)).deep.eq([
-      [ [ { value: 'e1', event: 'event1', index: 0, emitter: ee, emitterIndex: 0 } ] ]
+      [
+        [{ value: 'e1', event: 'event1', index: 0, emitter: ee, emitterIndex: 0 }],
+      ],
     ])
     expect(listenerCount(ee)).eq(0)
   })
@@ -51,9 +53,9 @@ describe('[ onceAllEx ]', () => {
         [
           { value: 'e3', event: 'event3', index: 0, emitter: ee0, emitterIndex: 0 },
           { value: 'e1', event: 'event1', index: 0, emitter: ee1, emitterIndex: 1 },
-          { value: 'e2', event: 'event2', index: 0, emitter: ee2, emitterIndex: 2 }
-        ]
-      ]
+          { value: 'e2', event: 'event2', index: 0, emitter: ee2, emitterIndex: 2 },
+        ],
+      ],
     ])
     expect(listenerCount(ee0, ee1, ee2)).eq(0)
   })

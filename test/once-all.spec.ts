@@ -1,6 +1,6 @@
+import { EventEmitter } from 'events'
 import { expect } from 'chai'
 import { createSpy, getSpyCalls } from 'spyfn'
-import { EventEmitter } from 'events'
 import { waitTimePromise as wait } from '@psxcode/wait'
 import onceAll from '../src/once-all'
 
@@ -20,7 +20,11 @@ describe('[ onceAll ]', () => {
     /* wait for ee to fire */
     await wait(0)
 
-    expect(getSpyCalls(spy)).deep.eq([ [ [ 'e1' ] ] ])
+    expect(getSpyCalls(spy)).deep.eq([
+      [
+        ['e1'],
+      ],
+    ])
   })
 
   it('multiple ees', async () => {
@@ -41,7 +45,11 @@ describe('[ onceAll ]', () => {
     /* wait for ee to fire */
     await wait(0)
 
-    expect(getSpyCalls(spy)).deep.eq([ [ [ 'ee0-e1', 'e1', 'e2' ] ] ])
+    expect(getSpyCalls(spy)).deep.eq([
+      [
+        ['ee0-e1', 'e1', 'e2'],
+      ],
+    ])
   })
 
   it('early unsubscribe', async () => {

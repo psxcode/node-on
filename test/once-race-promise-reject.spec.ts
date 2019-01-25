@@ -1,17 +1,17 @@
+import { EventEmitter } from 'events'
 import { expect } from 'chai'
 import { createSpy, getSpyCalls } from 'spyfn'
-import { EventEmitter } from 'events'
 import { waitTimePromise as wait } from '@psxcode/wait'
 import onceRacePromise from '../src/once-race-promise-reject'
 
-describe('[ onceRacePromiseReject ]', function () {
+describe('[ onceRacePromiseReject ]', () => {
   it('single ee', async () => {
     const ee = new EventEmitter()
     const resolveSpy = createSpy(() => {})
     const rejectSpy = createSpy(() => {})
 
     /* subscribe */
-    onceRacePromise([ 'error' ], [ 'event1', 'event2' ])(ee).then(resolveSpy, rejectSpy)
+    onceRacePromise(['error'], ['event1', 'event2'])(ee).then(resolveSpy, rejectSpy)
 
     ee.emit('event0', 'e0')
     ee.emit('event1', 'e1')
@@ -20,7 +20,9 @@ describe('[ onceRacePromiseReject ]', function () {
     /* wait for ee */
     await wait(0)
 
-    expect(getSpyCalls(resolveSpy)).deep.eq([ [ 'e1' ] ])
+    expect(getSpyCalls(resolveSpy)).deep.eq([
+      ['e1'],
+    ])
     expect(getSpyCalls(rejectSpy)).deep.eq([])
   })
 
@@ -32,7 +34,7 @@ describe('[ onceRacePromiseReject ]', function () {
     const rejectSpy = createSpy(() => {})
 
     /* subscribe */
-    onceRacePromise([ 'error' ], [ 'event1', 'event2' ])(ee0, ee1, ee2).then(resolveSpy, rejectSpy)
+    onceRacePromise(['error'], ['event1', 'event2'])(ee0, ee1, ee2).then(resolveSpy, rejectSpy)
 
     ee0.emit('event0', 'e0')
     ee1.emit('event1', 'e1')
@@ -41,7 +43,9 @@ describe('[ onceRacePromiseReject ]', function () {
     /* wait for ee */
     await wait(0)
 
-    expect(getSpyCalls(resolveSpy)).deep.eq([ [ 'e1' ] ])
+    expect(getSpyCalls(resolveSpy)).deep.eq([
+      ['e1'],
+    ])
     expect(getSpyCalls(rejectSpy)).deep.eq([])
   })
 
@@ -53,7 +57,7 @@ describe('[ onceRacePromiseReject ]', function () {
     const rejectSpy = createSpy(() => {})
 
     /* subscribe */
-    onceRacePromise([ 'error' ], [ 'event1', 'event2' ])(ee0, ee1, ee2).then(resolveSpy, rejectSpy)
+    onceRacePromise(['error'], ['event1', 'event2'])(ee0, ee1, ee2).then(resolveSpy, rejectSpy)
 
     ee0.emit('event0', 'e0')
     ee1.emit('error', 'err')
@@ -64,6 +68,8 @@ describe('[ onceRacePromiseReject ]', function () {
     await wait(0)
 
     expect(getSpyCalls(resolveSpy)).deep.eq([])
-    expect(getSpyCalls(rejectSpy)).deep.eq([ [ 'err' ] ])
+    expect(getSpyCalls(rejectSpy)).deep.eq([
+      ['err'],
+    ])
   })
 })

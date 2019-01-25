@@ -1,10 +1,10 @@
+import { EventEmitter } from 'events'
 import { expect } from 'chai'
 import { createSpy, getSpyCalls } from 'spyfn'
-import { EventEmitter } from 'events'
 import { waitTimePromise as wait } from '@psxcode/wait'
 import onceRace from '../src/once-race'
 
-describe('[ onceRace ]', function () {
+describe('[ onceRace ]', () => {
   it('single ee', async () => {
     const ee = new EventEmitter()
     const spy = createSpy(() => {})
@@ -24,7 +24,9 @@ describe('[ onceRace ]', function () {
     /* wait for ee to fire */
     await wait(0)
 
-    expect(getSpyCalls(spy)).deep.eq([ [ 'e1' ] ])
+    expect(getSpyCalls(spy)).deep.eq([
+      ['e1'],
+    ])
   })
 
   it('multiple ees', async () => {
@@ -50,7 +52,9 @@ describe('[ onceRace ]', function () {
     /* wait for ee */
     await wait(0)
 
-    expect(getSpyCalls(spy)).deep.eq([ [ 'e1' ] ])
+    expect(getSpyCalls(spy)).deep.eq([
+      ['e1'],
+    ])
   })
 
   it('early unsubscribe', async () => {
