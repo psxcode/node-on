@@ -6,13 +6,13 @@ const onceRace = (...events: string[]) => (cb: EmitterObserver) => (...emitters:
     unsubscribe()
     cb(...values)
   }
-
-  function unsubscribe () {
+  const unsubscribe = () => {
     emitters.forEach((ee) => events.forEach((e) => ee.removeListener(e, onData)))
   }
 
   /* subscribe */
   emitters.forEach((ee) => events.forEach((e) => ee.addListener(e, onData)))
+
   return unsubscribe
 }
 

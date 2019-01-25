@@ -10,7 +10,7 @@ const onceAllEx = (...events: string[]) => (cb: EmitterObserverAllEx) => (...emi
       index: 0,
       event,
       emitterIndex,
-      emitter: emitters[emitterIndex]
+      emitter: emitters[emitterIndex],
     }
 
     if (++numDone === emitters.length) {
@@ -18,9 +18,10 @@ const onceAllEx = (...events: string[]) => (cb: EmitterObserverAllEx) => (...emi
       cb(values)
     }
   }
-  const cbs = emitters.map((_, i) =>
-    events.reduce((res, e) => ((res[e] = listener(e, i)), res), {} as { [key: string]: EmitterObserverAllEx })
-  )
+  const cbs = emitters.map((_, i) => events.reduce(
+    (res, e) => ((res[e] = listener(e, i)), res),
+    {} as { [key: string]: EmitterObserverAllEx }
+  ))
   const unsubscribe = () => {
     emitters.forEach((ee, i) => events.forEach((e) => ee.removeListener(e, cbs[i][e])))
   }
