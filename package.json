@@ -15,7 +15,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.2.2",
-    "@babel/preset-env": "^7.2.3",
+    "@babel/preset-env": "^7.3.1",
     "@babel/preset-typescript": "^7.1.0",
     "@babel/register": "^7.0.0",
     "@psxcode/wait": "^0.1.1",
@@ -24,12 +24,15 @@
     "@types/node": "^10.12.18",
     "babel-plugin-istanbul": "^5.1.0",
     "chai": "^4.2.0",
-    "esm": "^3.0.84",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-typescript": "^1.0.0-0",
+    "eslint": "^5.11.1",
+    "esm": "^3.1.2",
     "mocha": "^5.2.0",
     "nyc": "^13.1.0",
-    "rimraf": "^2.6.2",
+    "rimraf": "^2.6.3",
     "spyfn": "^0.1.1",
-    "typescript": "^3.2.2"
+    "typescript": "^3.2.4"
   },
   "nyc": {
     "include": [
