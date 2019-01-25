@@ -2,8 +2,8 @@ import { EventEmitter } from 'events'
 import { expect } from 'chai'
 import { createSpy, getSpyCalls } from 'spyfn'
 import { waitTimePromise as wait } from '@psxcode/wait'
-import on from './on'
-import listenerCount from './listener-count'
+import on from '../src/on'
+import listenerCount from '../src/listener-count'
 
 describe('[ on ]', function () {
   it('single ee', async () => {
