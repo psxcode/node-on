@@ -3,7 +3,7 @@ import { expect } from 'chai'
 import { createSpy, getSpyCalls } from 'spyfn'
 import { waitTimePromise as wait } from '@psxcode/wait'
 import onceAllPromiseReject from '../src/once-all-promise-reject'
-import listenerCount from '../src/listener-count'
+import listenerCount from './listener-count'
 
 describe('[ onceAllPromiseReject ]', () => {
   it('single ee', async () => {
