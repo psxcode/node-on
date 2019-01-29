@@ -3,7 +3,7 @@ import { expect } from 'chai'
 import { createSpy, getSpyCalls } from 'spyfn'
 import { waitTimePromise as wait } from '@psxcode/wait'
 import on from '../src/on'
-import listenerCount from '../src/listener-count'
+import listenerCount from './listener-count'
 
 describe('[ on ]', () => {
   it('single ee', async () => {
