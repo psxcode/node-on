@@ -641,10 +641,10 @@
   version "5.2.5"
   resolved "https://registry.yarnpkg.com/@types/mocha/-/mocha-5.2.5.tgz#8a4accfc403c124a0bafe8a9fc61a05ec1032073"
 
-"@types/node@^10.12.18":
-  version "10.12.18"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-10.12.18.tgz#1d3ca764718915584fcd9f6344621b7672665c67"
-  integrity sha512-fh+pAqt4xRzPfqA6eh3Z2y6fyZavRIumvjhaCL753+TVkGKGhpPeyrJG2JftD0T9q4GF00KjefsQ+PQNDdWQaQ==
+"@types/node@^10.12.19":
+  version "10.12.19"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-10.12.19.tgz#ca1018c26be01f07e66ac7fefbeb6407e4490c61"
+  integrity sha512-2NVovndCjJQj6fUUn9jCgpP4WSqr+u1SoUZMZyJkhGeBFsm6dE46l31S7lPUYt9uQ28XI+ibrJA1f5XyH5HNtA==
 
 acorn-jsx@^5.0.0:
   version "5.0.1"
@@ -1159,10 +1159,10 @@ eslint@^5.11.1:
     table "^5.0.2"
     text-table "^0.2.0"
 
-esm@^3.1.2:
-  version "3.1.2"
-  resolved "https://registry.yarnpkg.com/esm/-/esm-3.1.2.tgz#3f33496ab6ff6556fc0a803696229d147b9a8700"
-  integrity sha512-orLuMaPdxYelL1qsM16XUbby4DQX1j5WSsFBg5vHuDJ2gUMMzpcbX82Lu305TjHYacXSuxYz3SuzWjdNFxIDJw==
+esm@^3.1.4:
+  version "3.1.4"
+  resolved "https://registry.yarnpkg.com/esm/-/esm-3.1.4.tgz#d75f7c1b16e5be57e0446c267d8c0fda9566983d"
+  integrity sha512-GScwIz0110RTNzBmAQEdqaAYkD9zVhj2Jo+jeizjIcdyTw+C6S0Zv/dlPYgfF41hRTu2f1vQYliubzIkusx2gA==
 
 espree@^5.0.0:
   version "5.0.0"
