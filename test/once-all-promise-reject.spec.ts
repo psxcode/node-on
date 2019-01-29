@@ -12,9 +12,7 @@ describe('[ onceAllPromiseReject ]', () => {
     const rejectSpy = createSpy(() => {})
 
     /* subscribe */
-    onceAllPromiseReject(['error'], ['event1', 'event2', 'event3'])(ee)
-      .then(resolveSpy)
-      .catch(rejectSpy)
+    onceAllPromiseReject(['error'], ['event1', 'event2', 'event3'])(ee).then(resolveSpy, rejectSpy)
 
     ee.emit('event0', 'e0')
     ee.emit('event1', 'e1')
@@ -39,8 +37,7 @@ describe('[ onceAllPromiseReject ]', () => {
     const rejectSpy = createSpy(() => {})
 
     /* subscribe */
-    onceAllPromiseReject(['error'], ['event1', 'event2', 'event3'])(ee0, ee1, ee2).then(resolveSpy)
-      .catch(rejectSpy)
+    onceAllPromiseReject(['error'], ['event1', 'event2', 'event3'])(ee0, ee1, ee2).then(resolveSpy, rejectSpy)
 
     ee0.emit('event0', 'e0')
     ee1.emit('event1', 'e1')
@@ -63,8 +60,7 @@ describe('[ onceAllPromiseReject ]', () => {
     const rejectSpy = createSpy(() => {})
 
     /* subscribe */
-    onceAllPromiseReject(['error'], ['event1', 'event2'])(ee).then(resolveSpy)
-      .catch(rejectSpy)
+    onceAllPromiseReject(['error'], ['event1', 'event2'])(ee).then(resolveSpy, rejectSpy)
 
     ee.emit('event0', 'e0')
     ee.emit('error', 'err')
