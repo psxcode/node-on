@@ -1,5 +1,7 @@
 # node-on
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/psxcode/node-on.svg)](https://greenkeeper.io/)
+
 Node-js EventEmitter helpers
 
 ### Install
