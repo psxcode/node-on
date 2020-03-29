@@ -1,6 +1,6 @@
 import { EventEmitter } from 'events'
 import { expect } from 'chai'
-import { createSpy, getSpyCalls } from 'spyfn'
+import fn from 'test-fn'
 import { waitTimePromise as wait } from '@psxcode/wait'
 import onceAllEx from '../src/once-all-ex'
 import listenerCount from './listener-count'
@@ -8,7 +8,7 @@ import listenerCount from './listener-count'
 describe('[ onceAllEx ]', () => {
   it('single ee', async () => {
     const ee = new EventEmitter()
-    const spy = createSpy(() => {})
+    const spy = fn()
 
     /* subscribe */
     onceAllEx('event1', 'event2')(spy)(ee)
@@ -21,7 +21,7 @@ describe('[ onceAllEx ]', () => {
     /* wait for ee to fire */
     await wait(0)
 
-    expect(getSpyCalls(spy)).deep.eq([
+    expect(spy.calls).deep.eq([
       [
         [{ value: 'e1', event: 'event1', index: 0, emitter: ee, emitterIndex: 0 }],
       ],
@@ -33,7 +33,7 @@ describe('[ onceAllEx ]', () => {
     const ee0 = new EventEmitter()
     const ee1 = new EventEmitter()
     const ee2 = new EventEmitter()
-    const spy = createSpy(() => {})
+    const spy = fn()
 
     /* subscribe */
     onceAllEx('event1', 'event2', 'event3')(spy)(ee0, ee1, ee2)
@@ -48,7 +48,7 @@ describe('[ onceAllEx ]', () => {
     /* wait for ee to fire */
     await wait(0)
 
-    expect(getSpyCalls(spy)).deep.eq([
+    expect(spy.calls).deep.eq([
       [
         [
           { value: 'e3', event: 'event3', index: 0, emitter: ee0, emitterIndex: 0 },
@@ -62,7 +62,7 @@ describe('[ onceAllEx ]', () => {
 
   it('early unsubscribe', async () => {
     const ee = new EventEmitter()
-    const spy = createSpy(() => {})
+    const spy = fn()
 
     /* subscribe */
     const unsub = onceAllEx('event1', 'event2')(spy)(ee)
@@ -77,7 +77,7 @@ describe('[ onceAllEx ]', () => {
     /* wait for ee to fire */
     await wait(0)
 
-    expect(getSpyCalls(spy)).deep.eq([])
+    expect(spy.calls).deep.eq([])
     expect(listenerCount(ee)).eq(0)
   })
 })

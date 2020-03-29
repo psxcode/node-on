@@ -1,6 +1,6 @@
 import { EventEmitter } from 'events'
 import { expect } from 'chai'
-import { createSpy, getSpyCalls } from 'spyfn'
+import fn from 'test-fn'
 import { waitTimePromise as wait } from '@psxcode/wait'
 import onceAllPromiseReject from '../src/once-all-promise-reject'
 import listenerCount from './listener-count'
@@ -8,8 +8,8 @@ import listenerCount from './listener-count'
 describe('[ onceAllPromiseReject ]', () => {
   it('single ee', async () => {
     const ee = new EventEmitter()
-    const resolveSpy = createSpy(() => {})
-    const rejectSpy = createSpy(() => {})
+    const resolveSpy = fn()
+    const rejectSpy = fn()
 
     /* subscribe */
     onceAllPromiseReject(['error'], ['event1', 'event2', 'event3'])(ee).then(resolveSpy, rejectSpy)
@@ -24,8 +24,8 @@ describe('[ onceAllPromiseReject ]', () => {
     /* wait for ee to fire */
     await wait(0)
 
-    expect(getSpyCalls(resolveSpy)).deep.eq([[['e1']]])
-    expect(getSpyCalls(rejectSpy)).deep.eq([])
+    expect(resolveSpy.calls).deep.eq([[['e1']]])
+    expect(rejectSpy.calls).deep.eq([])
     expect(listenerCount(ee)).eq(0)
   })
 
@@ -33,8 +33,8 @@ describe('[ onceAllPromiseReject ]', () => {
     const ee0 = new EventEmitter()
     const ee1 = new EventEmitter()
     const ee2 = new EventEmitter()
-    const resolveSpy = createSpy(() => {})
-    const rejectSpy = createSpy(() => {})
+    const resolveSpy = fn()
+    const rejectSpy = fn()
 
     /* subscribe */
     onceAllPromiseReject(['error'], ['event1', 'event2', 'event3'])(ee0, ee1, ee2).then(resolveSpy, rejectSpy)
@@ -49,15 +49,15 @@ describe('[ onceAllPromiseReject ]', () => {
     /* wait for ee to fire */
     await wait(0)
 
-    expect(getSpyCalls(resolveSpy)).deep.eq([[['e3', 'e1', 'e2']]])
-    expect(getSpyCalls(rejectSpy)).deep.eq([])
+    expect(resolveSpy.calls).deep.eq([[['e3', 'e1', 'e2']]])
+    expect(rejectSpy.calls).deep.eq([])
     expect(listenerCount(ee0, ee1, ee2)).eq(0)
   })
 
   it('single ee error', async () => {
     const ee = new EventEmitter()
-    const resolveSpy = createSpy(() => {})
-    const rejectSpy = createSpy(() => {})
+    const resolveSpy = fn()
+    const rejectSpy = fn()
 
     /* subscribe */
     onceAllPromiseReject(['error'], ['event1', 'event2'])(ee).then(resolveSpy, rejectSpy)
@@ -70,8 +70,8 @@ describe('[ onceAllPromiseReject ]', () => {
     /* wait for ee to fire */
     await wait(0)
 
-    expect(getSpyCalls(resolveSpy)).deep.eq([])
-    expect(getSpyCalls(rejectSpy)).deep.eq([['err']])
+    expect(resolveSpy.calls).deep.eq([])
+    expect(rejectSpy.calls).deep.eq([['err']])
     expect(listenerCount(ee)).eq(0)
   })
 })
