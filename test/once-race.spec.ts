@@ -1,13 +1,13 @@
 import { EventEmitter } from 'events'
 import { expect } from 'chai'
-import { createSpy, getSpyCalls } from 'spyfn'
+import fn from 'test-fn'
 import { waitTimePromise as wait } from '@psxcode/wait'
 import onceRace from '../src/once-race'
 
 describe('[ onceRace ]', () => {
   it('single ee', async () => {
     const ee = new EventEmitter()
-    const spy = createSpy(() => {})
+    const spy = fn()
     const unsub = onceRace('event1', 'event2')(spy)(ee)
 
     ee.emit('event0', 'e0')
@@ -24,7 +24,7 @@ describe('[ onceRace ]', () => {
     /* wait for ee to fire */
     await wait(0)
 
-    expect(getSpyCalls(spy)).deep.eq([
+    expect(spy.calls).deep.eq([
       ['e1'],
     ])
   })
@@ -33,7 +33,7 @@ describe('[ onceRace ]', () => {
     const ee0 = new EventEmitter()
     const ee1 = new EventEmitter()
     const ee2 = new EventEmitter()
-    const spy = createSpy(() => {})
+    const spy = fn()
 
     /* subscribe */
     const unsub = onceRace('event1', 'event2')(spy)(ee0, ee1, ee2)
@@ -52,14 +52,14 @@ describe('[ onceRace ]', () => {
     /* wait for ee */
     await wait(0)
 
-    expect(getSpyCalls(spy)).deep.eq([
+    expect(spy.calls).deep.eq([
       ['e1'],
     ])
   })
 
   it('early unsubscribe', async () => {
     const ee = new EventEmitter()
-    const spy = createSpy(() => {})
+    const spy = fn()
 
     /* subscribe */
     const unsub = onceRace('event1', 'event2')(spy)(ee)
@@ -74,6 +74,6 @@ describe('[ onceRace ]', () => {
     /* wait for ee */
     await wait(0)
 
-    expect(getSpyCalls(spy)).deep.eq([])
+    expect(spy.calls).deep.eq([])
   })
 })

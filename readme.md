@@ -1,4 +1,7 @@
 # node-on
+[![Release](https://img.shields.io/github/release/psxcode/node-on.svg)](https://github.com/psxcode/node-on/releases/latest)
+[![GitHub Actions](https://img.shields.io/endpoint.svg?url=https%3A%2F%2Factions-badge.atrox.dev%2Fpsxcode%2Fnode-on%2Fbadge)](https://actions-badge.atrox.dev/psxcode/node-on/goto)
+[![codecov](https://codecov.io/gh/psxcode/node-on/branch/master/graph/badge.svg)](https://codecov.io/gh/psxcode/node-on)
 
 Node-js EventEmitter helpers
 

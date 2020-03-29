@@ -1,6 +1,6 @@
 import { EventEmitter } from 'events'
 import { expect } from 'chai'
-import { createSpy, getSpyCalls } from 'spyfn'
+import fn from 'test-fn'
 import { waitTimePromise as wait } from '@psxcode/wait'
 import on from '../src/on'
 import listenerCount from './listener-count'
@@ -8,7 +8,7 @@ import listenerCount from './listener-count'
 describe('[ on ]', () => {
   it('single ee', async () => {
     const ee = new EventEmitter()
-    const spy = createSpy(() => {})
+    const spy = fn()
 
     /* subscribe */
     const unsub = on('event1', 'event2')(spy)(ee)
@@ -30,7 +30,7 @@ describe('[ on ]', () => {
     /* wait for ee */
     await wait(0)
 
-    expect(getSpyCalls(spy)).deep.eq([
+    expect(spy.calls).deep.eq([
       ['e1'],
       ['e1-repeat'],
       ['e2'],
@@ -42,7 +42,7 @@ describe('[ on ]', () => {
     const ee0 = new EventEmitter()
     const ee1 = new EventEmitter()
     const ee2 = new EventEmitter()
-    const spy = createSpy(() => {})
+    const spy = fn()
 
     /* subscribe */
     const unsub = on('event1', 'event2')(spy)(ee0, ee1, ee2)
@@ -61,7 +61,7 @@ describe('[ on ]', () => {
     /* wait for ee */
     await wait(0)
 
-    expect(getSpyCalls(spy)).deep.eq([
+    expect(spy.calls).deep.eq([
       ['e1'],
       ['e1-repeat'],
       ['e2'],
